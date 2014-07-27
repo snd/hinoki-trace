@@ -1,0 +1,44 @@
+{
+  "name": "hinoki-trace",
+  "version": "0.1.0",
+  "description": "tracing for functions returned by hinoki factories",
+  "keywords": ["debugging", "logging", "log", "debug", "hinoki"],
+  "homepage": "http://github.com/snd/hinoki-trace",
+  "author": {
+    "name": "Maximilian Krüger",
+    "email": "kruemaxi@gmail.com",
+    "url": "http://github.com/snd"
+  },
+  "bugs": {
+    "url": "http://github.com/snd/hinoki-trace/issues",
+    "email": "kruemaxi@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/snd/hinoki-trace.git"
+  },
+  "licenses": {
+    "type": "MIT",
+    "url": "git://github.com/snd/hinoki-trace/LICENSE"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "coffee-script": "1.7.1",
+    "nodeunit": "0.9.0",
+    "hinoki": "0.3.0-beta.6",
+    "bluebird": "2.2.2"
+  },
+  "main": "src/hinoki-trace",
+  "scripts": {
+    "compile": "coffee --bare --compile --output src src/*.coffee",
+    "prepublish": "coffee --bare --compile --output src src/*.coffee",
+    "pretest": "coffee --bare --compile --output src src/*.coffee && coffee --bare --compile --output test test/*.coffee",
+    "posttest": "rm test/*.js",
+    "clean": "rm src/*.js && rm test/*.js",
+    "test": "nodeunit test/*.js"
+  }
+}
