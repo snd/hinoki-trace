@@ -75,7 +75,7 @@ do ->
           hinokiTrace.valueToString(trace.value)
         )
 
-  hinokiTrace.newTracingResolver = (traceFunctions, options = {}) ->
+  hinokiTrace.newTracingFactoryResolver = (traceFunctions, options = {}) ->
     options.callback ?= hinokiTrace.defaultTraceCallback
     options.nextTraceId ?= hinokiTrace.newTraceIdGenerator()
 

@@ -87,13 +87,13 @@ TRACE          6 | squared | => 16
 
 ### todo
 
-- support not just factories but tracing of values which are functions as well
+- add support for performance profiling
+  - build on top instead of built-in
 - document options (`callback` and `nextTraceId`)
 - make it possibly to register a different handler for each traced function
 by passing an object instead of an array
   - a value of `true` just uses the default handler
-- add support for performance profiling
-  - build on top instead of built-in
+- support not just factories but tracing of values which are functions as well
 - make the example more interesting
 - add timestamps to trace output
 

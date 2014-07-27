@@ -64,7 +64,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
         return console.log(prefix, '=>', hinokiTrace.valueToString(trace.value));
     }
   };
-  return hinokiTrace.newTracingResolver = function(traceFunctions, options) {
+  return hinokiTrace.newTracingFactoryResolver = function(traceFunctions, options) {
     if (options == null) {
       options = {};
     }
