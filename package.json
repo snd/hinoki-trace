@@ -2,7 +2,7 @@
   "name": "hinoki-trace",
   "version": "0.1.0",
   "description": "tracing for functions returned by hinoki factories",
-  "keywords": ["debugging", "logging", "log", "debug", "hinoki"],
+  "keywords": ["debugging", "logging", "log", "introspection", "debug", "hinoki"],
   "homepage": "http://github.com/snd/hinoki-trace",
   "author": {
     "name": "Maximilian Krüger",
