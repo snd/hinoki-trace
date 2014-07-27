@@ -20,7 +20,7 @@ npm install hinoki-trace
 var hinokiTrace = require('hinoki-trace');
 ```
 
-## browser setup
+### browser setup
 
 your markup should look something like the following
 
