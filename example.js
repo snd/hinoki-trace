@@ -12,7 +12,7 @@ container.factories = {
   },
   squared: function(times) {
     return function(a) {
-      return Promise.delay(times(a, a), 100);
+      return Promise.delay(times(a, a), Math.random() * 500);
     };
   }
 };
@@ -21,5 +21,7 @@ container.factoryResolvers = [];
 container.factoryResolvers.push(trace.newTracingResolver(['times', 'squared']));
 
 hinoki.get(container, 'squared').then(function(squared) {
-  squared(3); // -> 9
+  Promise.all([1, 2, 3, 4, 5].map(function(x) {
+    return squared(x);
+  })).then(console.log);
 });
