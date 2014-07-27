@@ -89,8 +89,8 @@ do ->
         return factory
 
       delegateFactory = (dependencies...) ->
-        instance = factory(dependencies...)
-        unless 'function' is typeof instance
+        value = factory(dependencies...)
+        unless 'function' is typeof value
           throw new Error "tracing #{id} but factory didn't return a function"
         (args...) ->
           traceId = options.nextTraceId()
@@ -101,7 +101,7 @@ do ->
             traceId: traceId
             args: args
 
-          valueOrPromise = instance args...
+          valueOrPromise = value args...
 
           if hinokiTrace.isThenable valueOrPromise
             options.callback

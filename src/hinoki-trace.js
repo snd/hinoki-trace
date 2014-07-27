@@ -84,10 +84,10 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
         return factory;
       }
       delegateFactory = function() {
-        var dependencies, instance;
+        var dependencies, value;
         dependencies = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-        instance = factory.apply(null, dependencies);
-        if ('function' !== typeof instance) {
+        value = factory.apply(null, dependencies);
+        if ('function' !== typeof value) {
           throw new Error("tracing " + id + " but factory didn't return a function");
         }
         return function() {
@@ -100,7 +100,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
             traceId: traceId,
             args: args
           });
-          valueOrPromise = instance.apply(null, args);
+          valueOrPromise = value.apply(null, args);
           if (hinokiTrace.isThenable(valueOrPromise)) {
             options.callback({
               type: 'promiseReturn',
