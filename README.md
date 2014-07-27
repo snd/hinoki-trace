@@ -1,21 +1,25 @@
 # hinoki-trace
 
-**tracing for functions returned by hinoki factories**
+[![NPM version](https://badge.fury.io/js/hinoki-trace.svg)](http://badge.fury.io/js/hinoki-trace)
+[![Build Status](https://travis-ci.org/snd/hinoki-trace.svg?branch=master)](https://travis-ci.org/snd/hinoki-trace)
+[![Dependencies](https://david-dm.org/snd/hinoki-trace.svg)](https://david-dm.org/snd/hinoki-trace)
 
-special support for promise-returning functions.
+> tracing for functions returned by hinoki factories
 
-makes debugging a blast
+built-in support for promise-returning functions
 
-## [example.js](example.js)
+**makes debugging hinoki applications a blast :)**
 
-## todo
+### [example.js](example.js)
 
-- register a different handler for each traced function
+### todo
+
+- support not just factories but values as well
+- document options
+- make it possibly to register a different handler for each traced function
   - true just uses the default handler
-- more interesting example
-- tests ???
 - add support for performance profiling
-  - build outside of tracing framework
-- diagnostics panel
+  - build on top instead of built-in
+- make the example more interesting
 
-## license: MIT
+### [license: MIT](LICENSE)
