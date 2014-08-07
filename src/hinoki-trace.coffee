@@ -125,5 +125,6 @@ do ->
             return valueOrPromise
 
       delegateFactory.$inject = if factory.$inject? then factory.$inject else hinokiTrace.parseFunctionArguments factory
+      delegateFactory.$trace = true
 
       return delegateFactory

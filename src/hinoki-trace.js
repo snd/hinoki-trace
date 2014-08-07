@@ -129,6 +129,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
         };
       };
       delegateFactory.$inject = factory.$inject != null ? factory.$inject : hinokiTrace.parseFunctionArguments(factory);
+      delegateFactory.$trace = true;
       return delegateFactory;
     };
   };
