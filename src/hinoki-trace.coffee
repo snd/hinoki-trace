@@ -79,8 +79,8 @@ do ->
     options.callback ?= hinokiTrace.defaultTraceCallback
     options.nextTraceId ?= hinokiTrace.newTraceIdGenerator()
 
-    (container, id, inner) ->
-      factory = inner()
+    (container, name, inner) ->
+      factory = inner container, name
 
       unless factory?
         return
