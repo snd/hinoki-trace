@@ -12,7 +12,7 @@ module.exports =
           (a, b) -> a + b
 
     c.factoryResolvers = []
-    c.factoryResolvers.push trace.newTracingResolver ['square'],
+    c.factoryResolvers.push trace.newTracingFactoryResolver ['square'],
       callback: ->
         test.fail()
 
@@ -30,15 +30,15 @@ module.exports =
     traces = []
 
     c.factoryResolvers = []
-    c.factoryResolvers.push trace.newTracingResolver ['plus'],
+    c.factoryResolvers.push trace.newTracingFactoryResolver ['plus'],
       callback: (x) ->
         traces.push x
 
     hinoki.get(c, 'plus').then (plus) ->
       test.equals plus(1, 3), 4
       test.deepEqual traces, [
-        {type: 'call', id: 'plus', traceId: 0, args: [1, 3]}
-        {type: 'return', id: 'plus', traceId: 0, value: 4}
+        {type: 'call', name: 'plus', traceId: 0, args: [1, 3]}
+        {type: 'return', name: 'plus', traceId: 0, value: 4}
       ]
       test.done()
 
@@ -58,22 +58,22 @@ module.exports =
     traces = []
 
     c.factoryResolvers = []
-    c.factoryResolvers.push trace.newTracingResolver ['plus'],
+    c.factoryResolvers.push trace.newTracingFactoryResolver ['plus'],
       callback: (x) ->
         traces.push x
 
     hinoki.get(c, 'plus').then (plus) ->
       promise = plus(1, 3)
       test.deepEqual traces, [
-        {type: 'call', id: 'plus', traceId: 0, args: [1, 3]}
-        {type: 'promiseReturn', id: 'plus', traceId: 0, promise: promises[0]}
+        {type: 'call', name: 'plus', traceId: 0, args: [1, 3]}
+        {type: 'promiseReturn', name: 'plus', traceId: 0, promise: promises[0]}
       ]
       promise.then (sum) ->
         test.equals sum, 4
         test.deepEqual traces, [
-          {type: 'call', id: 'plus', traceId: 0, args: [1, 3]}
-          {type: 'promiseReturn', id: 'plus', traceId: 0, promise: promises[0]}
-          {type: 'promiseResolve', id: 'plus', traceId: 0, value: 4}
+          {type: 'call', name: 'plus', traceId: 0, args: [1, 3]}
+          {type: 'promiseReturn', name: 'plus', traceId: 0, promise: promises[0]}
+          {type: 'promiseResolve', name: 'plus', traceId: 0, value: 4}
         ]
 
         test.done()

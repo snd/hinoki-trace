@@ -52,10 +52,10 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
   };
   hinokiTrace.defaultTraceCallback = function(trace) {
     var prefix;
-    prefix = "TRACE " + (hinokiTrace.pad(trace.traceId, 10, ' ')) + " | " + trace.id + " |";
+    prefix = "TRACE " + (hinokiTrace.pad(trace.traceId, 10, ' ')) + " | " + trace.name + " |";
     switch (trace.type) {
       case 'call':
-        return console.log(prefix, '<-', trace.args.map(hinokiTrace.valueToString));
+        return console.log(prefix, '<-', (util != null ? util.inspect(trace.args) : trace.args));
       case 'return':
         return console.log(prefix, '->', hinokiTrace.valueToString(trace.value));
       case 'promiseReturn':
@@ -74,13 +74,13 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     if (options.nextTraceId == null) {
       options.nextTraceId = hinokiTrace.newTraceIdGenerator();
     }
-    return function(container, id, inner) {
+    return function(container, name, inner) {
       var delegateFactory, factory;
-      factory = inner();
+      factory = inner(container, name);
       if (factory == null) {
         return;
       }
-      if (__indexOf.call(traceFunctions, id) < 0) {
+      if (__indexOf.call(traceFunctions, name) < 0) {
         return factory;
       }
       delegateFactory = function() {
@@ -88,7 +88,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
         dependencies = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         value = factory.apply(null, dependencies);
         if ('function' !== typeof value) {
-          throw new Error("tracing " + id + " but factory didn't return a function");
+          throw new Error("tracing " + name + " but factory didn't return a function");
         }
         return function() {
           var args, traceId, valueOrPromise;
@@ -96,7 +96,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           traceId = options.nextTraceId();
           options.callback({
             type: 'call',
-            id: id,
+            name: name,
             traceId: traceId,
             args: args
           });
@@ -104,14 +104,14 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           if (hinokiTrace.isThenable(valueOrPromise)) {
             options.callback({
               type: 'promiseReturn',
-              id: id,
+              name: name,
               traceId: traceId,
               promise: valueOrPromise
             });
             return valueOrPromise.then(function(value) {
               options.callback({
                 type: 'promiseResolve',
-                id: id,
+                name: name,
                 traceId: traceId,
                 value: value
               });
@@ -120,7 +120,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           } else {
             options.callback({
               type: 'return',
-              id: id,
+              name: name,
               traceId: traceId,
               value: valueOrPromise
             });

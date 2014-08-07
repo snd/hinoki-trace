@@ -47,13 +47,13 @@ do ->
       value
 
   hinokiTrace.defaultTraceCallback = (trace) ->
-    prefix = "TRACE #{hinokiTrace.pad trace.traceId, 10, ' '} | #{trace.id} |"
+    prefix = "TRACE #{hinokiTrace.pad trace.traceId, 10, ' '} | #{trace.name} |"
     switch trace.type
       when 'call'
         console.log(
           prefix
           '<-'
-          trace.args.map(hinokiTrace.valueToString)
+          (if util? then util.inspect trace.args else trace.args)
         )
       when 'return'
         console.log(
@@ -85,19 +85,19 @@ do ->
       unless factory?
         return
 
-      unless id in traceFunctions
+      unless name in traceFunctions
         return factory
 
       delegateFactory = (dependencies...) ->
         value = factory(dependencies...)
         unless 'function' is typeof value
-          throw new Error "tracing #{id} but factory didn't return a function"
+          throw new Error "tracing #{name} but factory didn't return a function"
         (args...) ->
           traceId = options.nextTraceId()
 
           options.callback
             type: 'call'
-            id: id
+            name: name
             traceId: traceId
             args: args
 
@@ -106,20 +106,20 @@ do ->
           if hinokiTrace.isThenable valueOrPromise
             options.callback
               type: 'promiseReturn'
-              id: id
+              name: name
               traceId: traceId
               promise: valueOrPromise
             valueOrPromise.then (value) ->
               options.callback
                 type: 'promiseResolve'
-                id: id
+                name: name
                 traceId: traceId
                 value: value
               return value
           else
             options.callback
               type: 'return'
-              id: id
+              name: name
               traceId: traceId
               value: valueOrPromise
             return valueOrPromise
