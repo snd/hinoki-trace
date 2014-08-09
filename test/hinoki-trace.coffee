@@ -5,14 +5,13 @@ trace = require '../src/hinoki-trace'
 module.exports =
 
   'no-trace': (test) ->
-    test.expect 1
     c =
       factories:
         plus: ->
           (a, b) -> a + b
 
-    c.factoryResolvers = []
-    c.factoryResolvers.push trace.newTracingFactoryResolver ['square'],
+    c.resolvers = []
+    c.resolvers.push trace.newTracingResolver ['square'],
       callback: ->
         test.fail()
 
@@ -21,7 +20,6 @@ module.exports =
       test.done()
 
   'single sync trace': (test) ->
-    test.expect 2
     c =
       factories:
         plus: ->
@@ -29,8 +27,8 @@ module.exports =
 
     traces = []
 
-    c.factoryResolvers = []
-    c.factoryResolvers.push trace.newTracingFactoryResolver ['plus'],
+    c.resolvers = []
+    c.resolvers.push trace.newTracingResolver ['plus'],
       callback: (x) ->
         traces.push x
 
@@ -43,8 +41,6 @@ module.exports =
       test.done()
 
   'single async trace': (test) ->
-    test.expect 3
-
     promises = []
 
     c =
@@ -57,8 +53,8 @@ module.exports =
 
     traces = []
 
-    c.factoryResolvers = []
-    c.factoryResolvers.push trace.newTracingFactoryResolver ['plus'],
+    c.resolvers = []
+    c.resolvers.push trace.newTracingResolver ['plus'],
       callback: (x) ->
         traces.push x
 

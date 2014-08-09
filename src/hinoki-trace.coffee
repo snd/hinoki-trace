@@ -75,56 +75,73 @@ do ->
           hinokiTrace.valueToString(trace.value)
         )
 
-  hinokiTrace.newTracingFactoryResolver = (traceFunctions, options = {}) ->
+  hinokiTrace.newTracingResolver = (names, options = {}) ->
     options.callback ?= hinokiTrace.defaultTraceCallback
     options.nextTraceId ?= hinokiTrace.newTraceIdGenerator()
 
-    (container, name, inner) ->
-      factory = inner container, name
+    resolver = (query, inner) ->
+      result = inner query
 
-      unless factory?
+      # nothing to trace
+      unless result?
         return
 
-      unless name in traceFunctions
-        return factory
+      # we only trace factories
+      if result.value?
+        return result
 
-      delegateFactory = (dependencies...) ->
-        value = factory(dependencies...)
-        unless 'function' is typeof value
-          throw new Error "tracing #{name} but factory didn't return a function"
+      # we don't trace this factory
+      unless query.name in names
+        return result
+
+      factoryDelegate = (dependencies...) ->
+        f = result.factory(dependencies...)
+        unless 'function' is typeof f
+          throw new Error "tracing #{result.name} but factory didn't return a function"
         (args...) ->
           traceId = options.nextTraceId()
 
           options.callback
             type: 'call'
-            name: name
+            name: result.name
             traceId: traceId
             args: args
 
-          valueOrPromise = value args...
+          valueOrPromise = f args...
 
           if hinokiTrace.isThenable valueOrPromise
             options.callback
               type: 'promiseReturn'
-              name: name
+              name: result.name
               traceId: traceId
               promise: valueOrPromise
             valueOrPromise.then (value) ->
               options.callback
                 type: 'promiseResolve'
-                name: name
+                name: result.name
                 traceId: traceId
                 value: value
               return value
           else
             options.callback
               type: 'return'
-              name: name
+              name: result.name
               traceId: traceId
               value: valueOrPromise
             return valueOrPromise
 
-      delegateFactory.$inject = if factory.$inject? then factory.$inject else hinokiTrace.parseFunctionArguments factory
-      delegateFactory.$trace = true
+      factoryDelegate.$inject = if result.factory.$inject?
+        result.factory.$inject
+      else
+        hinokiTrace.parseFunctionArguments result.factory
+      factoryDelegate.$trace = true
 
-      return delegateFactory
+      {
+        factory: factoryDelegate
+        name: result.name
+        container: result.container
+        resolver: resolver
+      }
+
+    resolver.$name = 'tracingResolver'
+    return resolver

@@ -64,7 +64,8 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
         return console.log(prefix, '=>', hinokiTrace.valueToString(trace.value));
     }
   };
-  return hinokiTrace.newTracingFactoryResolver = function(traceFunctions, options) {
+  return hinokiTrace.newTracingResolver = function(names, options) {
+    var resolver;
     if (options == null) {
       options = {};
     }
@@ -74,21 +75,24 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     if (options.nextTraceId == null) {
       options.nextTraceId = hinokiTrace.newTraceIdGenerator();
     }
-    return function(container, name, inner) {
-      var delegateFactory, factory;
-      factory = inner(container, name);
-      if (factory == null) {
+    resolver = function(query, inner) {
+      var factoryDelegate, result, _ref;
+      result = inner(query);
+      if (result == null) {
         return;
       }
-      if (__indexOf.call(traceFunctions, name) < 0) {
-        return factory;
+      if (result.value != null) {
+        return result;
       }
-      delegateFactory = function() {
-        var dependencies, value;
+      if (_ref = query.name, __indexOf.call(names, _ref) < 0) {
+        return result;
+      }
+      factoryDelegate = function() {
+        var dependencies, f;
         dependencies = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-        value = factory.apply(null, dependencies);
-        if ('function' !== typeof value) {
-          throw new Error("tracing " + name + " but factory didn't return a function");
+        f = result.factory.apply(result, dependencies);
+        if ('function' !== typeof f) {
+          throw new Error("tracing " + result.name + " but factory didn't return a function");
         }
         return function() {
           var args, traceId, valueOrPromise;
@@ -96,22 +100,22 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           traceId = options.nextTraceId();
           options.callback({
             type: 'call',
-            name: name,
+            name: result.name,
             traceId: traceId,
             args: args
           });
-          valueOrPromise = value.apply(null, args);
+          valueOrPromise = f.apply(null, args);
           if (hinokiTrace.isThenable(valueOrPromise)) {
             options.callback({
               type: 'promiseReturn',
-              name: name,
+              name: result.name,
               traceId: traceId,
               promise: valueOrPromise
             });
             return valueOrPromise.then(function(value) {
               options.callback({
                 type: 'promiseResolve',
-                name: name,
+                name: result.name,
                 traceId: traceId,
                 value: value
               });
@@ -120,7 +124,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           } else {
             options.callback({
               type: 'return',
-              name: name,
+              name: result.name,
               traceId: traceId,
               value: valueOrPromise
             });
@@ -128,9 +132,16 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           }
         };
       };
-      delegateFactory.$inject = factory.$inject != null ? factory.$inject : hinokiTrace.parseFunctionArguments(factory);
-      delegateFactory.$trace = true;
-      return delegateFactory;
+      factoryDelegate.$inject = result.factory.$inject != null ? result.factory.$inject : hinokiTrace.parseFunctionArguments(result.factory);
+      factoryDelegate.$trace = true;
+      return {
+        factory: factoryDelegate,
+        name: result.name,
+        container: result.container,
+        resolver: resolver
+      };
     };
+    resolver.$name = 'tracingResolver';
+    return resolver;
   };
 })();
