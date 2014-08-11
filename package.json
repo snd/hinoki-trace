@@ -29,7 +29,7 @@
   "devDependencies": {
     "coffee-script": "1.7.1",
     "nodeunit": "0.9.0",
-    "hinoki": "0.3.0-beta.6",
+    "hinoki": "0.3.0-beta.7",
     "bluebird": "2.2.2"
   },
   "main": "src/hinoki-trace",
