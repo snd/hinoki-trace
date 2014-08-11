@@ -10,7 +10,7 @@
 - works in [node.js](#nodejs-setup) and the [browser](#browser-setup)
 - hinoki-trace makes debugging hinoki applications a blast :)
 
-### node.js setup
+## node.js setup
 
 ```
 npm install hinoki-trace
@@ -20,7 +20,7 @@ npm install hinoki-trace
 var hinokiTrace = require('hinoki-trace');
 ```
 
-### browser setup
+## browser setup
 
 your markup should look something like the following
 
@@ -53,7 +53,7 @@ and then use
 a build system like [gulp](http://gulpjs.com/) to bring everything together*
 
 
-### [example.js](example.js)
+## [example.js](example.js)
 
 trace output on the console looks like this:
 
@@ -85,7 +85,7 @@ TRACE          8 | squared | => 25
 TRACE          6 | squared | => 16
 ```
 
-### todo
+## todo
 
 - add support for performance profiling
   - build on top instead of built-in
@@ -97,4 +97,4 @@ by passing an object instead of an array
 - make the example more interesting
 - add timestamps to trace output
 
-### [license: MIT](LICENSE)
+## [license: MIT](LICENSE)
