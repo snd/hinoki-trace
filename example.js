@@ -19,9 +19,9 @@ container.factories = {
 
 traceTheseFunctions = ['times', 'squared'];
 
-tracingFactoryResolver = trace.newTracingFactoryResolver(traceTheseFunctions);
-
-container.factoryResolvers = [tracingFactoryResolver];
+container.resolvers = [
+  trace.newTracingResolver(traceTheseFunctions)
+];
 
 hinoki.get(container, 'squared').then(function(squared) {
   Promise.all([1, 2, 3, 4, 5].map(function(x) {
