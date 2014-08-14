@@ -91,19 +91,19 @@ do ->
         return result
 
       # we don't trace this factory
-      unless query.name in names
+      unless query.path[0] in names
         return result
 
       factoryDelegate = (dependencies...) ->
         f = result.factory(dependencies...)
         unless 'function' is typeof f
-          throw new Error "tracing #{result.name} but factory didn't return a function"
+          throw new Error "tracing #{result.path[0]} but factory didn't return a function"
         (args...) ->
           traceId = options.nextTraceId()
 
           options.callback
             type: 'call'
-            name: result.name
+            path: result.path
             traceId: traceId
             args: args
 
@@ -112,20 +112,20 @@ do ->
           if hinokiTrace.isThenable valueOrPromise
             options.callback
               type: 'promiseReturn'
-              name: result.name
+              path: result.path
               traceId: traceId
               promise: valueOrPromise
             valueOrPromise.then (value) ->
               options.callback
                 type: 'promiseResolve'
-                name: result.name
+                path: result.path
                 traceId: traceId
                 value: value
               return value
           else
             options.callback
               type: 'return'
-              name: result.name
+              path: result.path
               traceId: traceId
               value: valueOrPromise
             return valueOrPromise
@@ -138,7 +138,7 @@ do ->
 
       {
         factory: factoryDelegate
-        name: result.name
+        path: result.path
         container: result.container
         resolver: resolver
       }

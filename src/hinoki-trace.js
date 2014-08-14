@@ -84,7 +84,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
       if (result.value != null) {
         return result;
       }
-      if (_ref = query.name, __indexOf.call(names, _ref) < 0) {
+      if (_ref = query.path[0], __indexOf.call(names, _ref) < 0) {
         return result;
       }
       factoryDelegate = function() {
@@ -92,7 +92,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
         dependencies = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         f = result.factory.apply(result, dependencies);
         if ('function' !== typeof f) {
-          throw new Error("tracing " + result.name + " but factory didn't return a function");
+          throw new Error("tracing " + result.path[0] + " but factory didn't return a function");
         }
         return function() {
           var args, traceId, valueOrPromise;
@@ -100,7 +100,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           traceId = options.nextTraceId();
           options.callback({
             type: 'call',
-            name: result.name,
+            path: result.path,
             traceId: traceId,
             args: args
           });
@@ -108,14 +108,14 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           if (hinokiTrace.isThenable(valueOrPromise)) {
             options.callback({
               type: 'promiseReturn',
-              name: result.name,
+              path: result.path,
               traceId: traceId,
               promise: valueOrPromise
             });
             return valueOrPromise.then(function(value) {
               options.callback({
                 type: 'promiseResolve',
-                name: result.name,
+                path: result.path,
                 traceId: traceId,
                 value: value
               });
@@ -124,7 +124,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           } else {
             options.callback({
               type: 'return',
-              name: result.name,
+              path: result.path,
               traceId: traceId,
               value: valueOrPromise
             });
@@ -136,7 +136,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
       factoryDelegate.$trace = true;
       return {
         factory: factoryDelegate,
-        name: result.name,
+        path: result.path,
         container: result.container,
         resolver: resolver
       };
