@@ -1,6 +1,6 @@
 {
   "name": "hinoki-trace",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "tracing for functions returned by hinoki factories",
   "keywords": ["debugging", "logging", "log", "introspection", "debug", "hinoki"],
   "homepage": "http://github.com/snd/hinoki-trace",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "coffee-script": "1.7.1",
     "nodeunit": "0.9.0",
-    "hinoki": "0.3.0-beta7",
+    "hinoki": "0.3.0-beta.9",
     "bluebird": "2.2.2"
   },
   "main": "src/hinoki-trace",
