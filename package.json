@@ -30,15 +30,14 @@
     "coffee-script": "1.7.1",
     "nodeunit": "0.9.0",
     "hinoki": "0.3.0-beta.9",
-    "bluebird": "2.2.2"
+    "bluebird": "2.3.0"
   },
   "main": "src/hinoki-trace",
   "scripts": {
-    "compile": "coffee --bare --compile --output src src/*.coffee",
-    "prepublish": "coffee --bare --compile --output src src/*.coffee",
-    "pretest": "coffee --bare --compile --output src src/*.coffee && coffee --bare --compile --output test test/*.coffee",
-    "posttest": "rm test/*.js",
-    "clean": "rm src/*.js && rm test/*.js",
-    "test": "nodeunit test/*.js"
+    "compile": "node_modules/coffee-script/bin/coffee --bare --compile --output src src/*.coffee",
+    "prepublish": "node_modules/coffee-script/bin/coffee --bare --compile --output src src/*.coffee",
+    "clean": "rm src/*.js",
+    "pretest": "node_modules/coffee-script/bin/coffee --bare --compile --output src src/*.coffee",
+    "test": "node_modules/nodeunit/bin/nodeunit test/*.coffee"
   }
 }
