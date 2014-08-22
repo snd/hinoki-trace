@@ -75,16 +75,16 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
     if (options.nextTraceId == null) {
       options.nextTraceId = hinokiTrace.newTraceIdGenerator();
     }
-    resolver = function(query, inner) {
-      var factoryDelegate, result, _ref;
-      result = inner(query);
+    resolver = function(name, container, inner) {
+      var factoryDelegate, result;
+      result = inner(name);
       if (result == null) {
         return;
       }
       if (result.value != null) {
         return result;
       }
-      if (_ref = query.path[0], __indexOf.call(names, _ref) < 0) {
+      if (__indexOf.call(names, name) < 0) {
         return result;
       }
       factoryDelegate = function() {
@@ -92,7 +92,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
         dependencies = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
         f = result.factory.apply(result, dependencies);
         if ('function' !== typeof f) {
-          throw new Error("tracing " + result.path[0] + " but factory didn't return a function");
+          throw new Error("tracing " + result.name + " but factory didn't return a function");
         }
         return function() {
           var args, traceId, valueOrPromise;
@@ -100,7 +100,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           traceId = options.nextTraceId();
           options.callback({
             type: 'call',
-            path: result.path,
+            name: result.name,
             traceId: traceId,
             args: args
           });
@@ -108,14 +108,14 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           if (hinokiTrace.isThenable(valueOrPromise)) {
             options.callback({
               type: 'promiseReturn',
-              path: result.path,
+              name: result.name,
               traceId: traceId,
               promise: valueOrPromise
             });
             return valueOrPromise.then(function(value) {
               options.callback({
                 type: 'promiseResolve',
-                path: result.path,
+                name: result.name,
                 traceId: traceId,
                 value: value
               });
@@ -124,7 +124,7 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
           } else {
             options.callback({
               type: 'return',
-              path: result.path,
+              name: result.name,
               traceId: traceId,
               value: valueOrPromise
             });
@@ -136,9 +136,9 @@ var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; 
       factoryDelegate.$trace = true;
       return {
         factory: factoryDelegate,
-        path: result.path,
-        container: result.container,
-        resolver: resolver
+        name: result.name,
+        resolver: resolver,
+        nocache: result.nocache
       };
     };
     resolver.$name = 'tracingResolver';
